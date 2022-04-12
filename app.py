@@ -14,6 +14,12 @@ TWILIO_NUMBER='whatsapp:+14155238886'
 
 # write a function to send msg:
 def send_msg(msg, recipient): 
+    # print("sendmsg1")
+    # print("TWILIO_NUMBER", TWILIO_NUMBER)
+    # print("body", msg)
+    # print("to", recipient)
+    # print("ACCOUNT_ID", ACCOUNT_ID)
+    # print("TWILIO_TOKEN", TWILIO_TOKEN)
     message = client.messages.create(
         from_=TWILIO_NUMBER,
         body=msg,
@@ -27,14 +33,28 @@ def process_msg(msg):
     response = ""
     if msg == "hi":
         response = "Hello, welcome to the stock market bot!"
-        response += "Type sym:<stock_symbol> to know the price of the stock."
+        response += "Type sym:<stock_symbol>:<exchange_symbol> to know the price of the stock in selected market. E.g. sym:CRM:XNYS"
     elif 'sym:' in msg:
         data = msg.split(":")
         stock_symbol = data[1]
         stock_price = get_stock_price(stock_symbol)
-        last_price = stock_price['last_price']
-        last_price_str = str(last_price)
-        response = "The stock price of " + stock_symbol + " is: $" + last_price_str
+
+        symbol =str(stock_price['symbol'])
+        exchange = str(stock_price['exchange'])
+        adj_high = str(stock_price['adj_high']) 
+        adj_low = str(stock_price['adj_low'])
+        adj_close = str(stock_price['adj_close'])
+        dividend = str(stock_price['dividend']) 
+        date = str(stock_price['date'])
+
+        print(stock_price)
+
+        # last_price = stock_price['last_price']
+        # last_price_str = str(last_price)
+        response = "The stock price of " + symbol + " at this exchange: " + exchange + " with the adjusted high of: " + adj_high + " with the adjusted low of: " + adj_low + " with the adjusted close of: " + adj_close + " with the dividend of: " + dividend + " as of time-stamp: " + date
+
+        print(response)
+
     else:
         response = "Please type hi to get started."
     return response
